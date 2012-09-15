@@ -267,22 +267,6 @@ def sinc(x, z, ex, ez, sy):
     if (r == 0):
         r = 0.001
     return((math.sin(r)/r)*sy)
-    
-def foot(fx,fy,fz, mx,my,mz ,endx, endy, endz ):
-    for i in range(40):
-        randX = r.random()*20 - 10
-        randZ = r.random()*20 - 10
-        randY = r.random()*10 - 5
-        
-        lerpArr = lerp3D(fx + randX ,fy,fz +randZ, endx + randX/4, endy + randX/4, endz +randZ/4  ,4)
-        lerpArr[len(lerpArr)/2] = [mx + randZ, my +randX -randZ , mz+randX ]
-        path = cmds.curve(p=lerpArr)
-        profile = makeCircle(r.random()/4)
-        makeSweep(profile,path)
-        
-         
-    makeHeightField(makeCube(), fx,fy,fz,40, 40, 0.5, 0.5, 1600, 1200, 20, sinc)
-
 
 foot(30,0,30,10,16,0,10,20,0)
 foot(-30,0,30,-15,16, 0,-10,20,0)
