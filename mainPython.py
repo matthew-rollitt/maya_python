@@ -149,7 +149,12 @@ def makeSweep(profile, path, scale=1.0, hideCurves=False):
         cmds.hide(profile)
         cmds.hide(path)
     return result[0]
+""""
+////////////////////
+Extrude along a path
+//////////////////// 
 
+""""
 # run: test makeSweep <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 #profile = makeCircle()
 #path = makeCircle(radius=3)
@@ -159,9 +164,6 @@ def makeSweep(profile, path, scale=1.0, hideCurves=False):
 #profile = makeCircle()
 #path = makeCircle(radius=3)
 #horn = makeSweep(path, profile, scale=0)
-
-# EXERCISE: add rotation to makeSweep
-# EXERCISE: move pivot of profile off center (add pivot to makeCircle)
 
 # we can generate procedural curves
 def makeCurve(deg, points):
@@ -175,37 +177,6 @@ def makeWigglyCurve(np, radius, height):
         points.append(p)
         p = (gaussianRandom(-radius, radius), dy*(i+1), gaussianRandom(-radius, radius))
     return makeCurve(3, points)
-
-# run: test uses of makeWigglyCurve <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-#makeSweep(makeCircle(), makeWigglyCurve(10, 2, 20), scale=0)
-#makeSweep(makeWigglyCurve(10, 2, 20), makeCircle(normal=(0,0,1)), scale=0)
-#makeSweep(makeWigglyCurve(10, 2, 20), makeWigglyCurve(10, 2, 20), scale=1)
-
-# EXERCISE: make curves from particle paths
-
-# how can we place random versions of our sweep shape over an area?
-# we refactor placeRandomly so we can use it's core copy-and-place functionality elsewhere
-def placeAtRandomPoint(shape, dx, dy, dz, randomizer=uniformRandom):
-    translate(shape, randomizer(-dx, dx), randomizer(-dy, dy), randomizer(-dz, dz))
-
-def placeRandomly(shape, n, dx, dy, dz, randomizer=uniformRandom):
-    for i in range(n):
-        placeAtRandomPoint(makeCopy(shape), dx, dy, dz, randomizer)
-
-# now we make use of the new placeAtRandomPoint to place a list of shapes
-def scatterShapes(shapes, dx, dy, dz, randomizer=uniformRandom):
-    for shape in shapes:
-        placeAtRandomPoint(shape, dx, dy, dz, randomizer)
-
-# we need to make a list of shape variants
-def makeRandomWigglyTubes(n, np, radius, height, randomizer=uniformRandom):
-    shapes = []
-    for i in range(n):
-        shapes.append(makeSweep(makeCircle(),
-                                makeWigglyCurve(np, randomizer(0, radius), randomizer(0, height)),
-                                scale=0,
-                                hideCurves=True))
-    return shapes
 
 def children(node):
     return cmds.listRelatives(node, pa=True, typ='transform')
@@ -225,18 +196,6 @@ def turbulentDistribution(shape, n, levels, dx, dy, dz, randomizer=uniformRandom
         scale(shape, .5, .5, .5)
         turbulentDistribution(shape, n*2, levels-1, dx+1, dy+1, dz+1)
 
-#turbulentDistribution(makeCube(size=2), 50, 5, 10, 1, 10, randomizer=gaussianRandom)
-#turbulentDistribution(makeSphere(), 20, 5, .5, .5, .5, randomizer=gaussianRandom)
-
-# jitter
-def makeJittered2DGrid(shape, nx, ny, dx, dy, ddx, ddy):
-    for ix in range(nx):
-        for iy in range(ny):
-            translate(makeCopy(shape),
-                      dx*ix+uniformRandom(-ddx,ddx),
-                      dy*iy+uniformRandom(-ddy,ddy),
-                      0)
-# makeJittered2DGrid(makeSphere(), 20, 20, 2, 2, .5, .5)
 
 
 # height fields
@@ -330,14 +289,3 @@ foot(-30,0,30,-15,16, 0,-10,20,0)
 
 foot(30,0,-30,10,16,0,0,20,0)
 foot(-30,0,-30,-15,16, 0,-10,20,0)
-
-"""
-point = 50
-makeHeightField(makeCube(), -point,0,-point,20, 20, 0.8, 0.8, 1200, 1200, 10, sinc)
-
-makeHeightField(makeCube(), point,0,point,20, 20, 0.8, 0.8, 1200, 1200, 10, sinc)
-
-makeHeightField(makeCube(), -point,0,point,20, 20, 0.8, 0.8, 1200, 1200, 10, sinc)
-
-makeHeightField(makeCube(), point,0,-point,20, 20, 0.8, 0.8, 1200, 1200, 10, sinc)
-"""
