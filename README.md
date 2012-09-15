@@ -1,0 +1,1 @@
+This is an free to use python + maya code that does many cool things including lerping between 2 vectors 
